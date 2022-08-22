@@ -22,6 +22,7 @@ use InfyOm\Generator\Generators\MigrationGenerator;
 use InfyOm\Generator\Generators\ModelGenerator;
 use InfyOm\Generator\Generators\RepositoryGenerator;
 use InfyOm\Generator\Generators\RepositoryTestGenerator;
+use InfyOm\Generator\Generators\Scaffold\BrowserTestGenerator;
 use InfyOm\Generator\Generators\Scaffold\ControllerGenerator;
 use InfyOm\Generator\Generators\Scaffold\MenuGenerator;
 use InfyOm\Generator\Generators\Scaffold\RequestGenerator;
@@ -142,6 +143,11 @@ class BaseCommand extends Command
         if (!$this->isSkip('menu')) {
             $menuGenerator = app(MenuGenerator::class);
             $menuGenerator->generate();
+        }
+
+        if (!$this->isSkip('browser_test')) {
+            $browserTestGenerator = new BrowserTestGenerator();
+            $browserTestGenerator->generate();
         }
     }
 
@@ -293,6 +299,7 @@ class BaseCommand extends Command
             ['relations', null, InputOption::VALUE_NONE, 'Specify if you want to pass relationships for fields'],
             ['forceMigrate', null, InputOption::VALUE_NONE, 'Specify if you want to run migration or not'],
             ['connection', null, InputOption::VALUE_REQUIRED, 'Specify connection name'],
+            ['browser_test', null, InputOption::VALUE_REQUIRED, 'Generate dusk browser test codes.'],
         ];
     }
 

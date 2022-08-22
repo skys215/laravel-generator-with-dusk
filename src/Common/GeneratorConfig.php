@@ -163,6 +163,8 @@ class GeneratorConfig
 
         $paths->apiTests = config('laravel_generator.path.api_test', base_path('tests/APIs/'));
 
+        $paths->browserTests = config('laravel_generator.path.browser_tests', base_path('tests/Browser/'));
+
         $paths->controller = config(
             'laravel_generator.path.controller',
             app_path('Http/Controllers/')
@@ -238,6 +240,7 @@ class GeneratorConfig
 
         $namespaces->apiTests = config('laravel_generator.namespace.api_test', 'Tests\APIs');
         $namespaces->repositoryTests = config('laravel_generator.namespace.repository_test', 'Tests\Repositories');
+        $namespaces->browserTests = config('laravel_generator.namespace.browser_tests', 'Tests\Browser');
         $namespaces->tests = config('laravel_generator.namespace.tests', 'Tests');
 
         $this->namespaces = $namespaces;

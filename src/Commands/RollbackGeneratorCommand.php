@@ -13,6 +13,7 @@ use InfyOm\Generator\Generators\ModelGenerator;
 use InfyOm\Generator\Generators\RepositoryGenerator;
 use InfyOm\Generator\Generators\RepositoryTestGenerator;
 use InfyOm\Generator\Generators\Scaffold\ControllerGenerator;
+use InfyOm\Generator\Generators\Scaffold\BrowserTestGenerator;
 use InfyOm\Generator\Generators\Scaffold\MenuGenerator;
 use InfyOm\Generator\Generators\Scaffold\RequestGenerator;
 use InfyOm\Generator\Generators\Scaffold\RoutesGenerator;
@@ -100,6 +101,11 @@ class RollbackGeneratorCommand extends BaseCommand
 
             $apiTestGenerator = app(APITestGenerator::class);
             $apiTestGenerator->rollback();
+        }
+
+        if ($this->config->options->browset_test) {
+            $browserTestGenerator = new BrowsetTestGenerator($this->commandData);
+            $browserTestGenerator->rollback();
         }
 
         if ($this->config->options->factory or $this->config->options->tests) {

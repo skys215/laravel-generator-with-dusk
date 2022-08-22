@@ -51,6 +51,8 @@ return [
 
         'api_test'          => base_path('tests/APIs/'),
 
+        'browser_test'      => base_path('tests/Browser'),
+
         'views'             => resource_path('views/'),
 
         'menu_file'         => resource_path('views/layouts/menu.blade.php'),
@@ -92,6 +94,8 @@ return [
         'repository_test'   => 'Tests\Repositories',
 
         'api_test'          => 'Tests\APIs',
+
+        'browser_test'      => 'Tests\Browser',
     ],
 
     /*
@@ -147,6 +151,8 @@ return [
         'swagger' => false, // generate swagger for your APIs
 
         'tests' => false, // generate test cases for your APIs
+
+        'browser_tests' => false,
 
         'excluded_fields' => ['id'], // Array of columns that doesn't required while creating module
     ],
