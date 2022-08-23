@@ -42,8 +42,8 @@ class BrowserTestGenerator extends BaseGenerator
 
     public function rollback()
     {
-        if ($this->rollbackFile($this->path, $this->fileName)) {
-            $this->config->commandComment('Browset test file deleted: '.$this->fileName);
+        if ($this->rollbackFile($this->path, $filename)) {
+            $this->config->commandComment('Browset test file deleted: '.$filename);
         }
     }
 }

@@ -57,6 +57,10 @@ class InfyOmGeneratorServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../views' => resource_path('views/vendor/laravel-generator'),
             ], 'laravel-generator-templates');
+
+            $this->publishes([
+                __DIR__.'/../classes/DuskTestCase.php' => base_path('tests/DuskTestCase.php'),
+            ], 'laravel-generator-with-dusk-abclass');
         }
 
         $this->registerCommands();

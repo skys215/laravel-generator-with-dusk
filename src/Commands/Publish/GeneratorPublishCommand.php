@@ -32,6 +32,9 @@ class GeneratorPublishCommand extends PublishBaseCommand
         if ($this->option('localized')) {
             $this->publishLocaleFiles();
         }
+        if ($this->option('browser_tests')) {
+            $this->publishBrowserTestFiles();
+        }
     }
 
     private function updateRouteServiceProvider()
@@ -137,6 +140,43 @@ class GeneratorPublishCommand extends PublishBaseCommand
         $this->comment('Locale files published');
     }
 
+    public function publishBrowserTestFiles(){
+
+        $this->publishLoginTest();
+        $this->publishDashboardTest();
+    }
+
+    public function publishLoginTest()
+    {
+        $templateData = view('laravel-generator::browser_tests.login_test')->render();
+
+        $fileName = 'LoginTest.php';
+        $path = config('laravel_generator.path.browser_test', 'tests/Browser/');
+
+        if (file_exists($path.$fileName) && !$this->confirmOverwrite($fileName)) {
+            return;
+        }
+
+        g_filesystem()->createFile($path.$fileName, $templateData);
+
+        $this->comment('Created LoginTest to browser test.');
+    }
+
+    public function publishDashboardTest()
+    {
+        $templateData = view('laravel-generator::browser_tests.dashboard_test')->render();
+
+        $fileName = 'DashboardTest.php';
+        $path = config('laravel_generator.path.browser_test', 'tests/Browser/');
+        if (file_exists($path.$fileName) && !$this->confirmOverwrite($fileName)) {
+            return;
+        }
+
+        g_filesystem()->createFile($path.$fileName, $templateData);
+
+        $this->comment('Created DashboardTest to browser test.');
+    }
+
     /**
      * Get the console command options.
      *
@@ -146,6 +186,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
     {
         return [
             ['localized', null, InputOption::VALUE_NONE, 'Localize files.'],
+            ['browser_tests', null, InputOption::VALUE_NONE, 'Browser test files for login and dashboard.'],
         ];
     }
 
