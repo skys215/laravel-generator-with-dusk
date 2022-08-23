@@ -103,7 +103,7 @@ class RollbackGeneratorCommand extends BaseCommand
             $apiTestGenerator->rollback();
         }
 
-        if ($this->config->options->browset_test) {
+        if ($this->config->options->browser_test) {
             $browserTestGenerator = new BrowsetTestGenerator($this->commandData);
             $browserTestGenerator->rollback();
         }
