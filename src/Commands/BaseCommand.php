@@ -4,6 +4,7 @@ namespace InfyOm\Generator\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use InfyOm\Generator\Common\GeneratorConfig;
 use InfyOm\Generator\Common\GeneratorField;
@@ -243,28 +244,28 @@ class BaseCommand extends Command
 
     protected function saveLocaleFile()
     {
-        $locales = [
-            'singular' => $this->config->modelNames->name,
-            'plural'   => $this->config->modelNames->plural,
-            'fields'   => [],
-        ];
-
-        foreach ($this->config->fields as $field) {
-            $locales['fields'][$field->name] = Str::title(str_replace('_', ' ', $field->name));
-        }
-
-        $path = lang_path('en/models/');
-
         $fileName = $this->config->modelNames->snakePlural.'.php';
+        foreach ($this->config->locales as $locale => $fields) {
+            $locales = [
+                'singular' => $this->config->modelNames->name,
+                'plural'   => $this->config->modelNames->plural,
+                'fields'   => [],
+            ];
 
-        if (file_exists($path.$fileName) && !$this->confirmOverwrite($fileName)) {
-            return;
+            $path = lang_path($locale.'/models/');
+
+            if (file_exists($path.$fileName) && !$this->confirmOverwrite($locale.'/models/'.$fileName)) {
+                continue;
+            }
+            $locales['fields'] = $fields;
+
+            $locales = VarExporter::export($locales);
+            $end = ';'.infy_nl();
+            $content = "<?php\n\nreturn ".$locales.$end;
+            g_filesystem()->createFile($path.$fileName, $content);
+            $this->comment("\nModel Locale File {$locale}/models/{$fileName} created.");
         }
 
-        $locales = VarExporter::export($locales);
-        $end = ';'.infy_nl();
-        $content = "<?php\n\nreturn ".$locales.$end;
-        g_filesystem()->createFile($path.$fileName, $content);
         $this->comment("\nModel Locale File saved.");
         $this->info($fileName);
     }
@@ -443,6 +444,32 @@ class BaseCommand extends Command
                 $this->config->relations[] = GeneratorFieldRelation::parseRelation($field['relation']);
             }
         }
+        $this->config->locales = $this->mergeFieldLocale();
+    }
+
+    protected function mergeFieldLocale()
+    {
+        $fields = array_flip(array_column($this->config->fields, 'name'));
+
+        array_walk($fields, function(&$item, $key){
+            $item = Str::title(str_replace('_', ' ', $key));
+        });
+
+        $locales = (new Collection(array_column($this->config->fields,'locales')))->flatMap(function($item){
+                return array_keys($item);
+            })->unique()->flip()->map(function($item) use ($fields){
+                return $fields;
+            })->toArray();
+
+        foreach ($this->config->fields as $field) {
+            foreach ($field->locales as $locale => $name) {
+                dump($locale. '-'.$field->name. '-'.$name);
+                $locales[$locale][$field->name] = $name;
+                dump($locales[$locale][$field->name]);
+            }
+        }
+
+        return $locales;
     }
 
     protected function parseFieldsFromGUI()

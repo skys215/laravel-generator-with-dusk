@@ -218,6 +218,7 @@ class GeneratorField
         $field->inForm = $fieldInput['inForm'] ?? true;
         $field->inIndex = $fieldInput['inIndex'] ?? true;
         $field->inView = $fieldInput['inView'] ?? true;
+        $field->locales = $fieldInput['locales'] ?? ['en' => Str::title(str_replace('_', ' ', $field->name))];
 
         if (str_contains($field->validations, 'required')) {
             $field->isNotNull = true;
