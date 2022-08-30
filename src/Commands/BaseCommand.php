@@ -173,7 +173,7 @@ class BaseCommand extends Command
         }
 
         if (!$this->isSkip('browser_test')) {
-            $browserTestGenerator = new BrowserTestGenerator();
+            $browserTestGenerator =  app(BrowserTestGenerator::class);
             $browserTestGenerator->generate();
         }
     }
@@ -326,7 +326,7 @@ class BaseCommand extends Command
             ['relations', null, InputOption::VALUE_NONE, 'Specify if you want to pass relationships for fields'],
             ['forceMigrate', null, InputOption::VALUE_NONE, 'Specify if you want to run migration or not'],
             ['connection', null, InputOption::VALUE_REQUIRED, 'Specify connection name'],
-            ['browser_test', null, InputOption::VALUE_REQUIRED, 'Generate dusk browser test codes.'],
+            ['browser_test', null, InputOption::VALUE_NONE, 'Generate dusk browser test codes.'],
             ['locales', null, InputOption::VALUE_REQUIRED, 'Set locale for model.'],
         ];
     }
@@ -490,9 +490,7 @@ class BaseCommand extends Command
 
         foreach ($this->config->fields as $field) {
             foreach ($field->locales as $locale => $name) {
-                dump($locale. '-'.$field->name. '-'.$name);
                 $locales[$locale][$field->name] = $name;
-                dump($locales[$locale][$field->name]);
             }
         }
 

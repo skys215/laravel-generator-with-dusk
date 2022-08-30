@@ -278,6 +278,7 @@ class GeneratorConfig
         $options->seeder = config('laravel_generator.options.seeder', false);
         $options->swagger = config('laravel_generator.options.swagger', false);
         $options->tests = config('laravel_generator.options.tests', false);
+        $options->browser_tests = config('laravel_generator.options.browser_tests', false);
         $options->excludedFields = config('laravel_generator.options.excluded_fields', ['id']);
 
         $this->options = $options;

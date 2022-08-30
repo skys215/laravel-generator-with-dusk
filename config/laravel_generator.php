@@ -51,7 +51,7 @@ return [
 
         'api_test'          => base_path('tests/APIs/'),
 
-        'browser_test'      => base_path('tests/Browser'),
+        'browser_test'      => base_path('tests/Browser/'),
 
         'views'             => resource_path('views/'),
 
