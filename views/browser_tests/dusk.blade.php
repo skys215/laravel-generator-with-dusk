@@ -15,7 +15,7 @@ class {{$config->modelNames->name}}Test extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->loginAs(1)
                     ->visit(route('@if($config->prefixes->route) {{$config->prefixes->getRoutePrefixWith('.')}} @endif{{$config->modelNames->snakePlural}}.index'))
-                    ->assertSee(@if($config->options->localized)__('models/{{ $config->modelNames->camelPlural }}.labels.backend.management') @else '{{$config->modelNames->humanPlural}}@endif')
+                    ->assertSee(@if($config->options->localized)__('models/{{ $config->modelNames->camelPlural }}.labels.backend.management') @else '{{$config->modelNames->humanPlural}}'@endif)
                     ->waitFor('{{$table_selector}}');
             $this->capture('index');
         });
@@ -46,7 +46,7 @@ class {{$config->modelNames->name}}Test extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->loginAs(1)
                     ->visit(route('@if($config->prefixes->route) {{$config->prefixes->getRoutePrefixWith('.')}} @endif{{$config->modelNames->snakePlural}}.show',1))
-                    ->assertSee(@if($config->options->localized)__('models/{{ $config->modelNames->camelPlural }}.labels.backend.show') @else '{{$config->modelNames->human}}@endif Details');
+                    ->assertSee(@if($config->options->localized)__('models/{{ $config->modelNames->camelPlural }}.labels.backend.show') @else '{{$config->modelNames->human}}  Details'@endif);
             $this->capture('view');
         });
     }
