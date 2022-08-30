@@ -2,6 +2,7 @@
 
 namespace InfyOm\Generator\Commands;
 
+use Illuminate\Support\Str;
 use InfyOm\Generator\Common\GeneratorConfig;
 use InfyOm\Generator\Generators\API\APIControllerGenerator;
 use InfyOm\Generator\Generators\API\APIRequestGenerator;
@@ -95,6 +96,10 @@ class RollbackGeneratorCommand extends BaseCommand
             $menuGenerator->rollback();
         }
 
+        if ($this->config->options->localized) {
+            $this->removeLocaleFile();
+        }
+
         if ($this->config->options->tests) {
             $repositoryTestGenerator = app(RepositoryTestGenerator::class);
             $repositoryTestGenerator->rollback();
@@ -124,6 +129,31 @@ class RollbackGeneratorCommand extends BaseCommand
         $this->fireFileDeletedEvent($type);
 
         return 0;
+    }
+
+    protected function removeLocaleFile()
+    {
+        $fileName = $this->config->modelNames->snakePlural.'.php';
+        $folders = scandir(lang_path('/'));
+
+        foreach ($folders as $locale){
+            // skip hidden files and folders or absolute paths
+            if (Str::startsWith($locale, '.')){
+                continue;
+            }
+
+            // skip files
+            if (!is_dir(lang_path($locale))){
+                continue;
+            }
+
+            $absPath = $locale.'/models/';
+            $path = lang_path($absPath);
+            if (file_exists($path)){
+                g_filesystem()->deleteFile($path, $fileName);
+                $this->comment('Locale file deleted: '.$absPath.$fileName);
+            }
+        }
     }
 
     /**

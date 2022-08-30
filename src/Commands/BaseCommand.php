@@ -42,6 +42,8 @@ class BaseCommand extends Command
 
     public Composer $composer;
 
+    public array $locales;
+
     public function __construct()
     {
         parent::__construct();
@@ -55,7 +57,31 @@ class BaseCommand extends Command
         $this->config->setCommand($this);
 
         $this->config->init();
+        if ($this->option('locales')) {
+            $this->parseLocales();
+        }
+
         $this->getFields();
+    }
+
+    /**
+     * Example: en:pair,pairs/zh_CN:对/fr:sth,sth
+     * @return [type] [description]
+     */
+    public function parseLocales()
+    {
+        $strings = [];
+        $input = $this->option('locales');
+        $locales = explode('/', $input);
+        foreach ($locales as $str) {
+            $pair = explode(':', $str);
+            $names = explode(',',$pair[1]);
+            $strings[$pair[0]] = [
+                'singular' => $names[0],
+                'plural' => isset($names[1])?$names[1]:$names[0],
+            ];
+        }
+        $this->locales = $strings;
     }
 
     public function generateCommonItems()
@@ -247,8 +273,8 @@ class BaseCommand extends Command
         $fileName = $this->config->modelNames->snakePlural.'.php';
         foreach ($this->config->locales as $locale => $fields) {
             $locales = [
-                'singular' => $this->config->modelNames->name,
-                'plural'   => $this->config->modelNames->plural,
+                'singular' => isset($this->locales[$locale]['singular'])?$this->locales[$locale]['singular']:$this->config->modelNames->name,
+                'plural'   => isset($this->locales[$locale]['plural'])?$this->locales[$locale]['plural']:$this->config->modelNames->plural,
                 'fields'   => [],
             ];
 
@@ -301,6 +327,7 @@ class BaseCommand extends Command
             ['forceMigrate', null, InputOption::VALUE_NONE, 'Specify if you want to run migration or not'],
             ['connection', null, InputOption::VALUE_REQUIRED, 'Specify connection name'],
             ['browser_test', null, InputOption::VALUE_REQUIRED, 'Generate dusk browser test codes.'],
+            ['locales', null, InputOption::VALUE_REQUIRED, 'Set locale for model.'],
         ];
     }
 
