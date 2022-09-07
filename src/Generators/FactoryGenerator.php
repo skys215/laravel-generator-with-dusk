@@ -2,6 +2,7 @@
 
 namespace InfyOm\Generator\Generators;
 
+use Faker\Generator;
 use Illuminate\Support\Str;
 use InfyOm\Generator\Utils\GeneratorFieldsInputUtil;
 
@@ -79,7 +80,7 @@ class FactoryGenerator extends BaseGenerator
                 continue;
             }
 
-            $fieldData = "'".$field->name."' => ".'$this->faker->';
+            $fieldData = "'".$field->name."' => ";
             $rule = null;
             if (isset($rules[$field->name])) {
                 $rule = $rules[$field->name];
@@ -150,6 +151,14 @@ class FactoryGenerator extends BaseGenerator
             if ($fakerData == ':relation') {
                 $fieldData = $this->getValidRelation($field->name);
             } else {
+                // if factory is set, override fakerData
+                if (!is_null($field->factory)) {
+                    $fakerData = $this->parseFactoryField($field);
+                }
+                else{
+                    $fakerData = '$this->faker->'. $fakerData;
+                }
+
                 $fieldData .= $fakerData;
             }
 
@@ -265,6 +274,57 @@ class FactoryGenerator extends BaseGenerator
             'text' => $text,
             'uses' => $uses,
         ];
+    }
+
+    public function parseFactoryField($field)
+    {
+        $commands = explode('|',$field->factory);
+        $string = '';
+        $faker = app(Generator::class);
+        foreach ($commands as $index => $command) {
+            $params = explode(':', $command);
+            $func = $params[0];
+            $args = $params[1] ?? null;
+
+            // if ends with ) treat as native function call
+            if (Str::endsWith($func, ')')){
+                $string .= $func;
+            }
+            // treat no parameter no ' string as function
+            else if (function_exists($func)) {
+                $string .= $func . '('.$args.')';
+            }
+            else if (method_exists($faker, $func)) {
+                $string .= '$this->faker->'.$func.'('. $args.')';
+            }
+            else if (Str::startsWith($func, ['+', '-', '*', '/'])) {
+                $operator = substr($func, 0, 1);
+                $string .= $operator.$args;
+            }
+            else if (Str::startsWith($func, '\'')) {
+                $string .= $func;
+            }
+            else{
+                // if starts with ' then treat as string
+                // or if there's no parameter
+                switch($func) {
+                    case 'concat':
+                        $string .= '.\''.$args.'\'';
+                        break;
+                    // treat as string concat
+                    default:
+                        $string .= '.\''.$func.'\'';
+                        break;
+                }
+            }
+
+            // don't add brackets on first and last expression
+            // so that does't generate extra brackets
+            if ($index != count($commands)-1) {
+                $string = '('.$string.')';
+            }
+        }
+        return $string;
     }
 
     public function rollback()
