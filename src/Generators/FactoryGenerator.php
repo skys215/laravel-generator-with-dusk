@@ -285,6 +285,11 @@ class FactoryGenerator extends BaseGenerator
             $params = explode(':', $command);
             $func = $params[0];
             $args = $params[1] ?? null;
+            $validFormatter = false;
+            try{
+                $validFormatter = (bool)$faker->getFormatter($func);
+            }
+            catch(\Exception $e){}
 
             // if ends with ) treat as native function call
             if (Str::endsWith($func, ')')){
@@ -294,7 +299,7 @@ class FactoryGenerator extends BaseGenerator
             else if (function_exists($func)) {
                 $string .= $func . '('.$args.')';
             }
-            else if (method_exists($faker, $func)) {
+            else if ($validFormatter) {
                 $string .= '$this->faker->'.$func.'('. $args.')';
             }
             else if (Str::startsWith($func, ['+', '-', '*', '/'])) {
