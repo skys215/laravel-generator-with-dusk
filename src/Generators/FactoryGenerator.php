@@ -319,8 +319,8 @@ class FactoryGenerator extends BaseGenerator
                         break;
                     // treat as string concat
                     default:
-                        $args = trim($args, '\'');
-                        $string .= ($index == 0?'':'.').'\''.$args.'\'';
+                        $func = trim($func, '\'');
+                        $string .= ($index == 0?'':'.').'\''.$func.'\'';
                         break;
                 }
             }
