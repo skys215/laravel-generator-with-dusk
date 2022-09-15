@@ -299,7 +299,7 @@ class FactoryGenerator extends BaseGenerator
             else if (function_exists($func)) {
                 $string .= $func . '('.$args.')';
             }
-            else if ($validFormatter) {
+            else if ($validFormatter || method_exists($faker, $func)) {
                 $string .= '$this->faker->'.$func.'('. $args.')';
             }
             else if (Str::startsWith($func, ['+', '-', '*', '/'])) {
