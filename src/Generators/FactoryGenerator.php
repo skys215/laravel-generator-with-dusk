@@ -314,11 +314,13 @@ class FactoryGenerator extends BaseGenerator
                 // or if there's no parameter
                 switch($func) {
                     case 'concat':
+                        $args = trim($args, '\'');
                         $string .= ($index == 0?'':'.').'\''.$args.'\'';
                         break;
                     // treat as string concat
                     default:
-                        $string .= ($index == 0?'':'.').'\''.$func.'\'';
+                        $args = trim($args, '\'');
+                        $string .= ($index == 0?'':'.').'\''.$args.'\'';
                         break;
                 }
             }
