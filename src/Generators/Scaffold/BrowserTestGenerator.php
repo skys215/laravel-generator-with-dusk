@@ -16,7 +16,7 @@ class BrowserTestGenerator extends BaseGenerator
     {
         parent::__construct();
 
-        $this->templateType = config('infyom.laravel_generator.templates', 'coreui-templates');
+        $this->templateType = config('laravel_generator.templates', 'coreui-templates');
 
         $this->path = $this->config->paths->browserTests;
         $this->fileName = $this->config->modelNames->name.'Test.php';
