@@ -1,7 +1,7 @@
 {
-    "name": "infyomlabs/laravel-generator",
+    "name": "bairh/laravel-generator",
     "type": "library",
-    "description": "InfyOm Laravel Generator",
+    "description": "Bairh Laravel Generator",
     "keywords": [
         "laravel",
         "api",
@@ -19,8 +19,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Mitul Golakiya",
-            "email": "me@mitul.me"
+            "name": "skys215",
+            "email": "skys215@gmail.com"
         }
     ],
     "require": {
@@ -58,12 +58,6 @@
             ]
         }
     },
-    "funding": [
-        {
-            "type": "opencollective",
-            "url": "https://opencollective.com/infyomlabs"
-        }
-    ],
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
